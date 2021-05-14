@@ -32,12 +32,11 @@ class RunSlotCommand extends Command {
         $betAmount = $this->ask('Enter bet amount');
 
         $board = SlotsGenerator::play();
-        $payline = (new Payline(5))->generatePaylines();
+//        $payline = (new Payline(5))->generatePaylines();
 
         /**
          * To have predefined paylines
          */
-        /**
         $predefinedPaylines = [
             [0, 3, 6, 9, 12],
             [1, 4, 7, 10, 13],
@@ -45,8 +44,7 @@ class RunSlotCommand extends Command {
             [0, 4, 8, 10, 12],
             [2, 4, 6, 10, 14]
         ];
-        $payline = (new Payline(5))->forcePaylines($predefinedPaylines);
-         */
+        $payline = (new Payline())->forcePaylines($predefinedPaylines);
 
         $slotMachine = new SlotMachine($board, $payline, $betAmount);
         $slotMachine->determineWinningLines();

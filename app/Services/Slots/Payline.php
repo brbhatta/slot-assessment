@@ -25,7 +25,7 @@ class Payline
      * Payline constructor.
      * @param int $paylineRowsCount
      */
-    function __construct(int $paylineRowsCount)
+    function __construct(int $paylineRowsCount = 5)
     {
         $this->paylineRowsCount = $paylineRowsCount;
     }
