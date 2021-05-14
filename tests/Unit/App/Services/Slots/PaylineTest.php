@@ -2,7 +2,7 @@
 
 namespace Unit\App\Services\Slots;
 
-use App\Services\Slots\PayLine;
+use App\Services\Slots\Payline;
 
 class PaylineTest extends \TestCase
 {
@@ -12,7 +12,7 @@ class PaylineTest extends \TestCase
     function testGeneratePaylines(): void
     {
 
-        $result = (new PayLine(4))->generatePaylines()->getPayLines();
+        $result = (new Payline(4))->generatePaylines()->getPaylines();
 
         $this->assertEquals(count($result), 4, 'Asserting result array has 4 rows');
         $this->assertEquals(count($result[0]), 5, 'Asserting result has 5 columns');
@@ -30,7 +30,7 @@ class PaylineTest extends \TestCase
             [4, 7, 5]
         ];
 
-        $result = (new PayLine(2))->forcePaylines($paylines)->getPayLines();
+        $result = (new Payline(2))->forcePaylines($paylines)->getPaylines();
 
         $this->assertEquals($result, $paylines);
     }

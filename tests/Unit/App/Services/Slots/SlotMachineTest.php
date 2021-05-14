@@ -2,7 +2,7 @@
 
 namespace Unit\App\Services\Slots;
 
-use App\Services\Slots\PayLine;
+use App\Services\Slots\Payline;
 use App\Services\Slots\SlotMachine;
 use App\Services\Slots\SlotsGenerator;
 
@@ -19,7 +19,7 @@ class SlotMachineTest extends \TestCase
      *
      * @var array
      */
-    private $payLines = [
+    private $paylines = [
         [0, 3, 6, 9, 12],
         [1, 4, 7, 10, 13],
         [2, 5, 8, 11, 14],
@@ -38,7 +38,7 @@ class SlotMachineTest extends \TestCase
             "J", "Cat", "Blir", "J", "J", "Bir", "J", "Q", "J", "Q", "Mon", "Q", "K", "Bir", "A"
         ]);
 
-        $payline = (new PayLine(5))->forcePaylines($this->payLines);
+        $payline = (new Payline(5))->forcePaylines($this->paylines);
 
         $this->slotMachine = new SlotMachine($board, $payline, 1);
 
@@ -72,7 +72,7 @@ class SlotMachineTest extends \TestCase
     {
         $this->slotMachine->calculateWinningAmount();
 
-        $result = $this->slotMachine->formatWiningPayLines();;
+        $result = $this->slotMachine->formatWiningPaylines();;
 
         $this->assertEquals([
             ["0, 3, 6, 9, 12" => 3],

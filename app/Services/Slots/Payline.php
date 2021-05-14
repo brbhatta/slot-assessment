@@ -2,12 +2,12 @@
 
 namespace App\Services\Slots;
 
-class PayLine
+class Payline
 {
     /**
      * @var array
      */
-    private $payLines = [];
+    private $paylines = [];
 
     /**
      * Each payline will have 5 index (items)
@@ -34,15 +34,14 @@ class PayLine
      * Allow paylines to be specifically determined to avoid arbitrary values
      *
      * @param array $paylines
-     * @return PayLine
+     * @return Payline
      */
-    public function forcePaylines(array $paylines): PayLine
+    public function forcePaylines(array $paylines): Payline
     {
-
         if ($this->paylineRowsCount !== count($paylines)) {
             throw new \Exception('Rows does not match with paylines provided');
         }
-        $this->payLines = $paylines;
+        $this->paylines = $paylines;
 
         return $this;
     }
@@ -52,18 +51,18 @@ class PayLine
      *
      * @return $this
      */
-    public function generatePaylines(): PayLine
+    public function generatePaylines(): Payline
     {
-
         for ($i = 0; $i < $this->paylineRowsCount; $i++) {
 
-            $this->payLines[$i] = [];
+            $this->paylines[$i] = [];
 
             for ($j = 0; $j < $this->columns; $j++) {
                 $randIndex = rand(0, 14);
 
-                if (!in_array($randIndex, $this->payLines[$i])) {
-                    $this->payLines[$i][] = $randIndex;
+                //To ensure that same index is not repeated in a payline
+                if (!in_array($randIndex, $this->paylines[$i])) {
+                    $this->paylines[$i][] = $randIndex;
                 } else {
                     $j--;
                 }
@@ -77,8 +76,8 @@ class PayLine
     /**
      * @return array
      */
-    public function getPayLines(): array
+    public function getPaylines(): array
     {
-        return $this->payLines;
+        return $this->paylines;
     }
 }

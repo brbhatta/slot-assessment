@@ -1,6 +1,6 @@
 <?php
 namespace App\Console\Commands;
-use App\Services\Slots\PayLine;
+use App\Services\Slots\Payline;
 use App\Services\Slots\SlotMachine;
 use App\Services\Slots\SlotsGenerator;
 use Illuminate\Console\Command;
@@ -25,35 +25,39 @@ class RunSlotCommand extends Command {
      * Execute the console command.
      *
      * @return void
+     * @throws \App\Exceptions\BoardSlotsException
      */
     public function handle() : void
     {
         $betAmount = $this->ask('Enter bet amount');
 
         $board = SlotsGenerator::play();
-        $payline = (new PayLine(5))->generatePaylines();
+        $payline = (new Payline(5))->generatePaylines();
+
+        /**
+         * To have predefined paylines
+         */
+        /**
+        $predefinedPaylines = [
+            [0, 3, 6, 9, 12],
+            [1, 4, 7, 10, 13],
+            [2, 5, 8, 11, 14],
+            [0, 4, 8, 10, 12],
+            [2, 4, 6, 10, 14]
+        ];
+        $payline = (new Payline(5))->forcePaylines($predefinedPaylines);
+         */
 
         $slotMachine = new SlotMachine($board, $payline, $betAmount);
         $slotMachine->determineWinningLines();
 
-        $payLines = $slotMachine->formatWiningPayLines();
-        $winningAmount = ($slotMachine->calculateWinningAmount())->getWinningAmount();
+        $response = [
+            'board' => $board->formatBoard(),
+            'paylines' => $slotMachine->formatWiningPaylines(),
+            'bet_amount' => $betAmount,
+            'total_win' => ($slotMachine->calculateWinningAmount())->getWinningAmount()
+        ];
 
-        if($winningAmount === 0) {
-            $this->info('Try again :)');
-        }
-
-        if($winningAmount > 0) {
-            $this->info(json_encode($board->formatBoard()));
-            $this->newLine();
-
-            $this->info(json_encode($payLines));
-            $this->newLine();
-
-            $this->info($slotMachine->getBetAmount());
-            $this->newLine();
-
-            $this->info($winningAmount);
-        }
+        $this->line(json_encode($response,JSON_PRETTY_PRINT));
     }
 }

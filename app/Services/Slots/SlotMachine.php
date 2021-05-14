@@ -12,7 +12,7 @@ class SlotMachine
     /**
      * @var
      */
-    private $payLines;
+    private $paylines;
 
     /**
      * Will be in cents because of weird behaviour of floats
@@ -33,39 +33,39 @@ class SlotMachine
     /**
      * SlotMachine constructor.
      * @param Board $board
-     * @param PayLine $payLine
+     * @param Payline $payline
      * @param int $betAmount
      */
-    function __construct(Board $board, PayLine $payLine, int $betAmount)
+    function __construct(Board $board, Payline $payline, int $betAmount)
     {
         $this->slots = $board->getSlots();
-        $this->payLines = $payLine->getPayLines();
+        $this->paylines = $payline->getPaylines();
         $this->betAmount = $betAmount * 100;
     }
 
     /**
-     * Determine based on slot items in board, which payLines are payable
+     * Determine based on slot items in board, which paylines are payable
      * @return array
      */
     public function determineWinningLines(): SlotMachine
     {
-        foreach ($this->payLines as $k => $payLine) {
+        foreach ($this->paylines as $k => $payline) {
 
             /*
-             * Get slot items in particular payLine
+             * Get slot items in particular payline
              */
-            $boardPayLineSet = array_intersect_key($this->slots, array_flip($payLine));;
+            $boardPaylineSet = array_intersect_key($this->slots, array_flip($payline));;
 
             $stage = []; // Temp variable to identify consecutive slot items
             $results = []; // Hold consecutive slot items
 
             /**
-             * Loop through payLine and set result if there are 3 or more consecutive slot item
+             * Loop through payline and set result if there are 3 or more consecutive slot item
              */
-            foreach ($boardPayLineSet as $val) {
+            foreach ($boardPaylineSet as $val) {
                 if (count($stage) > 0 && $val != $stage[count($stage) - 1]) {
 
-                    //Ensure there are more than 2 consecutive item in a payLine
+                    //Ensure there are more than 2 consecutive item in a payline
                     if (count($stage) > 2) {
                         $results = $stage;
                     }
@@ -83,7 +83,7 @@ class SlotMachine
     }
 
     /**
-     * Calculates the wining amount in cents (Euro * 100) based on applicable payLines
+     * Calculates the wining amount in cents (Euro * 100) based on applicable paylines
      *
      * @return SlotMachine
      */
@@ -154,16 +154,16 @@ class SlotMachine
     }
 
     /**
-     * Format winning payLines to have desirable printing
+     * Format winning paylines to have desirable printing
      *
      * @return array
      */
-    public function formatWiningPayLines(): array
+    public function formatWiningPaylines(): array
     {
 
         $results = [];
         foreach ($this->winningLines as $k => $count) {
-            $results[] = [implode(', ', $this->payLines[$k]) => $count];
+            $results[] = [implode(', ', $this->paylines[$k]) => $count];
         }
 
         return $results;
