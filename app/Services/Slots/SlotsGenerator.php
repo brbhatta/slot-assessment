@@ -67,6 +67,7 @@ class SlotsGenerator
 
     /**
      * @return Board
+     * @throws \App\Exceptions\BoardSlotsException
      */
     public static function play(): Board
     {
@@ -76,6 +77,7 @@ class SlotsGenerator
     /**
      * @param $symbols
      * @return Board
+     * @throws \App\Exceptions\BoardSlotsException
      */
     public static function playFromItems(array $symbols): Board
     {
