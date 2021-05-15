@@ -43,7 +43,7 @@ class SlotsGenerator
      * @return Board
      * @throws \App\Exceptions\BoardSlotsException
      */
-    public function getBoard(): Board
+    private function getBoard(): Board
     {
         return new Board($this->slots, $this->rows, $this->columns);
     }

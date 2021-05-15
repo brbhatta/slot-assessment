@@ -81,7 +81,6 @@ class Board
      */
     public function formatBoard(): array
     {
-
         for ($i = 0; $i < $this->rows; $i++) {
             $this->generateRow($i);
         }
@@ -90,7 +89,7 @@ class Board
     }
 
     /**
-     * Formats array into row colums based on number of rows defined.
+     * Formats array into row columns based on number of rows defined.
      * Sets resultBoard with slot items in columns for provided row index
      * @param $index
      */

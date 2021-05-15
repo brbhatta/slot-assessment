@@ -45,15 +45,13 @@ class RunSlotCommand extends Command {
             [2, 4, 6, 10, 14]
         ];
         $payline = (new Payline())->forcePaylines($predefinedPaylines);
-
         $slotMachine = new SlotMachine($board, $payline, $betAmount);
-        $slotMachine->determineWinningLines();
 
         $response = [
             'board' => $board->formatBoard(),
-            'paylines' => $slotMachine->formatWiningPaylines(),
-            'bet_amount' => $betAmount,
-            'total_win' => ($slotMachine->calculateWinningAmount())->getWinningAmount()
+            'paylines' => $slotMachine->getFormattedWiningLines(),
+            'bet_amount' => $slotMachine->getBetAmount(),
+            'total_win' => $slotMachine->getWinningAmount()
         ];
 
         $this->line(json_encode($response,JSON_PRETTY_PRINT));

@@ -26,6 +26,11 @@ class SlotMachine
     private $winningLines = [];
 
     /**
+     * @var array
+     */
+    private $formattedWiningLines = [];
+
+    /**
      * @var int
      */
     private $winningAmount = 0;
@@ -41,20 +46,23 @@ class SlotMachine
         $this->slots = $board->getSlots();
         $this->paylines = $payline->getPaylines();
         $this->betAmount = $betAmount * 100;
+
+        $this->determineWinningLines();
+        $this->calculateWinningAmount();
     }
 
     /**
      * Determine based on slot items in board, which paylines are payable
      * @return array
      */
-    public function determineWinningLines(): SlotMachine
+    private function determineWinningLines(): void
     {
         foreach ($this->paylines as $k => $payline) {
 
             /*
              * Get slot items in particular payline
              */
-            $boardPaylineSet = array_intersect_key($this->slots, array_flip($payline));;
+            $boardPaylineSet = array_intersect_key($this->slots, array_flip($payline));
 
             $stage = []; // Temp variable to identify consecutive slot items
             $results = []; // Hold consecutive slot items
@@ -63,15 +71,21 @@ class SlotMachine
              * Loop through payline and set result if there are 3 or more consecutive slot item
              */
             foreach ($boardPaylineSet as $val) {
-                if (count($stage) > 0 && $val != $stage[count($stage) - 1]) {
 
+                if (count($stage) > 0 && $val != $stage[count($stage) - 1]) {
                     //Ensure there are more than 2 consecutive item in a payline
                     if (count($stage) > 2) {
                         $results = $stage;
                     }
                     $stage = [];
                 }
+
                 $stage[] = $val;
+
+                // To ensure that if all items are consecutive in a payline, results is well populated.
+                if(count($stage) === count($boardPaylineSet)) {
+                    $results = $stage;
+                }
             }
 
             if (!empty($results)) {
@@ -79,7 +93,9 @@ class SlotMachine
             }
         }
 
-        return $this;
+        $this->formatWiningPaylines();
+
+        return;
     }
 
     /**
@@ -87,7 +103,7 @@ class SlotMachine
      *
      * @return SlotMachine
      */
-    public function calculateWinningAmount(): SlotMachine
+    private function calculateWinningAmount(): void
     {
         if (empty($this->winningLines)) {
             $this->determineWinningLines();
@@ -104,23 +120,7 @@ class SlotMachine
 
         $this->winningAmount = ($totalWiningPercentage / 100) * $this->betAmount;
 
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getWinningAmount(): int
-    {
-        return $this->winningAmount;
-    }
-
-    /**
-     * @return array
-     */
-    public function getWinningLines(): array
-    {
-        return $this->winningLines;
+        return;
     }
 
     /**
@@ -145,7 +145,7 @@ class SlotMachine
                 $winPercentage = 200;
                 break;
             case 5:
-                $winPercentage = 2000;
+                $winPercentage = 1000;
                 break;
             default:
                 $winPercentage = 0;
@@ -155,18 +155,30 @@ class SlotMachine
 
     /**
      * Format winning paylines to have desirable printing
-     *
-     * @return array
      */
-    public function formatWiningPaylines(): array
+    private function formatWiningPaylines(): void
     {
-
-        $results = [];
         foreach ($this->winningLines as $k => $count) {
-            $results[] = [implode(', ', $this->paylines[$k]) => $count];
+            $this->formattedWiningLines[] = [implode(', ', $this->paylines[$k]) => $count];
         }
 
-        return $results;
+        return;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWinningAmount(): int
+    {
+        return $this->winningAmount;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWinningLines(): array
+    {
+        return $this->winningLines;
     }
 
     /**
@@ -175,5 +187,13 @@ class SlotMachine
     public function getBetAmount(): int
     {
         return $this->betAmount;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFormattedWiningLines()
+    {
+        return $this->formattedWiningLines;
     }
 }
